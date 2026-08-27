@@ -1,0 +1,23 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+env/
+.env
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.DS_Store
+
+# data
+data/raw/
+data/processed/
+*.csv
+*.geojson
+*.shp
+*.shx
+*.dbf
+!data/*.example.csv
+
+# docker
+*.log
