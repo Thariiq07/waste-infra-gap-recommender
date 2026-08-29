@@ -40,12 +40,12 @@ That analysis lived in a PDF and a set of notebooks. This project turns it into 
 
 ## Status
 
-🚧 **Week 1 of 6 — Scaffold & data.** See [Issues](../../issues) for the full 6-week roadmap.
+🚧 **Week 2 of 6 — FastAPI service.** See [Issues](../../issues) for the full 6-week roadmap.
 
 | Week | Focus | Status |
 |---|---|---|
-| 1 | Repo scaffold + data ingestion | In progress |
-| 2 | FastAPI service + tests | Planned |
+| 1 | Repo scaffold + data ingestion | Done |
+| 2 | FastAPI service + tests | Done |
 | 3 | Docker + CI/CD | Planned |
 | 4 | Streamlit dashboard | Planned |
 | 5 | Deploy API + wire up live dashboard | Planned |
@@ -74,7 +74,13 @@ _Coming in Week 5 — link will go here once the API and dashboard are deployed.
 
 ## Running locally
 
-_Instructions will be added as each service comes online (Week 2 onward)._
+```
+pip install -r requirements.txt
+python data/ingest.py          # cleans the raw data into data/processed/
+uvicorn api.main:app --reload  # starts the API at http://127.0.0.1:8000
+```
+
+Interactive docs at `http://127.0.0.1:8000/docs`. Run `pytest` to run the test suite.
 
 ## License
 
