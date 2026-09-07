@@ -53,7 +53,7 @@ def add_clusters(la_features: pd.DataFrame) -> pd.DataFrame:
     urban_id = sizes.idxmin()
     remaining = [c for c in sizes.index if c != urban_id]
     commuter_id = profile.loc[remaining, "professional_rate"].idxmax()
-    rural_id = [c for c in remaining if c != commuter_id][0]
+    rural_id = next(c for c in remaining if c != commuter_id)
 
     label_map = {urban_id: "Urban", commuter_id: "Commuter Belt", rural_id: "Rural"}
     df["cluster_label"] = df["cluster_id"].map(label_map)
