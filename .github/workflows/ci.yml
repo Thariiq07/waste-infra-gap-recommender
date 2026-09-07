@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Lint with ruff
+        run: ruff check .
+
+      - name: Run tests
+        run: pytest -v
+
+  docker-build:
+    runs-on: ubuntu-latest
+    needs: lint-and-test
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -t waste-infra-gap-recommender .
+
+      - name: Smoke-test the container
+        run: |
+          docker run -d -p 8000:8000 --name smoke-test waste-infra-gap-recommender
+          for i in $(seq 1 15); do
+            if curl -sf http://localhost:8000/clusters > /dev/null; then
+              echo "API responded successfully"
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "API did not respond in time"
+          docker logs smoke-test
+          exit 1

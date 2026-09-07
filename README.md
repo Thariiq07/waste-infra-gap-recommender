@@ -1,5 +1,7 @@
 # Waste Infrastructure Gap Recommender
 
+[![CI](https://github.com/Thariiq07/waste-infra-gap-recommender/actions/workflows/ci.yml/badge.svg)](https://github.com/Thariiq07/waste-infra-gap-recommender/actions/workflows/ci.yml)
+
 **Turning a Master's thesis into a live, queryable tool.**
 
 ## The problem
@@ -40,13 +42,13 @@ That analysis lived in a PDF and a set of notebooks. This project turns it into 
 
 ## Status
 
-🚧 **Week 2 of 6 — FastAPI service.** See [Issues](../../issues) for the full 6-week roadmap.
+🚧 **Week 3 of 6 — Docker + CI/CD.** See [Issues](../../issues) for the full 6-week roadmap.
 
 | Week | Focus | Status |
 |---|---|---|
 | 1 | Repo scaffold + data ingestion | Done |
 | 2 | FastAPI service + tests | Done |
-| 3 | Docker + CI/CD | Planned |
+| 3 | Docker + CI/CD | Done |
 | 4 | Streamlit dashboard | Planned |
 | 5 | Deploy API + wire up live dashboard | Planned |
 | 6 | Polish, docs, demo link | Planned |
@@ -81,6 +83,21 @@ uvicorn api.main:app --reload  # starts the API at http://127.0.0.1:8000
 ```
 
 Interactive docs at `http://127.0.0.1:8000/docs`. Run `pytest` to run the test suite.
+
+## Running with Docker
+
+```
+docker build -t waste-infra-gap-recommender .
+docker run -p 8000:8000 waste-infra-gap-recommender
+```
+
+Or, for local development with live-reload against your own copy of the code:
+
+```
+docker compose up
+```
+
+Either way, the API is at `http://localhost:8000/docs` once the container is running. On startup the container cleans the raw data itself, so there's nothing extra to run first.
 
 ## License
 

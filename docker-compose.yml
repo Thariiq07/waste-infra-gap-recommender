@@ -1,0 +1,18 @@
+# docker-compose.yml
+#
+# Local dev convenience: `docker compose up` builds and runs the API with
+# live-reload against your local api/ and data/ folders, instead of the
+# static copy baked into the image.
+#
+# Run:  docker compose up
+# Then: http://localhost:8000/docs
+
+services:
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./api:/app/api
+      - ./data:/app/data
+    command: sh -c "python data/ingest.py && uvicorn api.main:app --host 0.0.0.0 --port 8000 --reload"

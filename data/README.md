@@ -4,9 +4,11 @@
 pipeline (CSO Census 2022, Pobal HP Deprivation Index, EPA Licensed Waste Facility
 register) out of the original Colab notebook.
 
-Raw data files are gitignored — only the ingestion code is versioned. Drop your own
-copies of the three source files/zip into `data/raw/` to run it locally (or use the
-copies already there if you got this repo as a zip from Claude).
+The three small source files (~700KB total: two CSVs and the EPA facilities zip) are
+committed in `data/raw/` on purpose — they're public, open government data (CSO,
+Pobal, EPA), and CI/Docker both need real input data to run the pipeline end-to-end
+without you having to supply anything. Only the *generated* output
+(`data/processed/`) is gitignored.
 
 **Status: all three sources ported and verified** against the thesis report's own
 results — output matches Table 11 of the dissertation report exactly:
@@ -31,6 +33,5 @@ Produces:
 - `data/processed/facility_counts.csv` — e-waste-relevant licensed facility count per
   local authority
 
-These three outputs are exactly what Week 2's FastAPI endpoints will serve, and what
-the clustering/Underserved Index logic (also ported from the notebook, not yet wired
-up here) will run on top of.
+These three outputs are exactly what the FastAPI service (`api/`) serves, via the
+clustering and Underserved Index logic in `api/clustering.py`.
