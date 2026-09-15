@@ -35,3 +35,15 @@ Produces:
 
 These three outputs are exactly what the FastAPI service (`api/`) serves, via the
 clustering and Underserved Index logic in `api/clustering.py`.
+
+## Map boundaries (Week 4)
+
+None of the three sources above carry any geometry (they're all codes and numbers),
+but the dashboard needs actual shapes to draw a map. `build_boundaries.py` is a
+one-off script (already run — its output is committed, so you don't need to re-run
+it) that produces `data/raw/local_authority_boundaries.geojson`: the current 31 local
+authority boundaries, built by merging three pairs of pre-2014 areas (Limerick
+City+County, Waterford City+County, North+South Tipperary) from a public CSO Census
+2011 boundary set — those three pairs' land boundaries didn't change in the 2014
+local government reform, only which council administers them. See the script's own
+docstring for the full source and reasoning.

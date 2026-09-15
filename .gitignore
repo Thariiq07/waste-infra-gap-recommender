@@ -34,5 +34,11 @@ data/raw/*
 !data/raw/hp-deprivation-index-scores-2022.csv
 !data/raw/LicensedFacilities_16062026.zip
 
+# The dashboard's map boundaries are a generated file too (data/build_boundaries.py
+# produces it from a public CSO boundary source), but at ~470KB it's committed
+# directly rather than regenerated on every run/build, since the raw source it's
+# built from is a much larger one-off download not otherwise needed by the app.
+!data/raw/local_authority_boundaries.geojson
+
 # docker
 *.log

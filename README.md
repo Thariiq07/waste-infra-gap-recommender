@@ -42,14 +42,14 @@ That analysis lived in a PDF and a set of notebooks. This project turns it into 
 
 ## Status
 
-🚧 **Week 3 of 6 — Docker + CI/CD.** See [Issues](../../issues) for the full 6-week roadmap.
+🚧 **Week 4 of 6 — Streamlit dashboard.** See [Issues](../../issues) for the full 6-week roadmap.
 
 | Week | Focus | Status |
 |---|---|---|
 | 1 | Repo scaffold + data ingestion | Done |
 | 2 | FastAPI service + tests | Done |
 | 3 | Docker + CI/CD | Done |
-| 4 | Streamlit dashboard | Planned |
+| 4 | Streamlit dashboard | Done (local) — public deployment lands in Week 5, alongside the API |
 | 5 | Deploy API + wire up live dashboard | Planned |
 | 6 | Polish, docs, demo link | Planned |
 
@@ -60,7 +60,7 @@ That analysis lived in a PDF and a set of notebooks. This project turns it into 
 ├── api/          FastAPI service (clustering + Underserved Index endpoints)
 ├── dashboard/    Streamlit app (interactive choropleth map)
 ├── data/         Ingestion pipeline for CSO / Pobal / EPA datasets
-├── tests/        pytest suite for the API
+├── tests/        pytest suite for the API and dashboard
 └── .github/      CI workflows
 ```
 
@@ -98,6 +98,16 @@ docker compose up
 ```
 
 Either way, the API is at `http://localhost:8000/docs` once the container is running. On startup the container cleans the raw data itself, so there's nothing extra to run first.
+
+## Running the dashboard
+
+With the API running (either of the two ways above), in another terminal:
+
+```
+streamlit run dashboard/app.py
+```
+
+Opens automatically at `http://localhost:8501` — a colour-coded map of all 31 local authorities, a plain-English lookup for any one of them, and the full ranked list. No API knowledge needed to read it. See `dashboard/README.md` for details.
 
 ## License
 
