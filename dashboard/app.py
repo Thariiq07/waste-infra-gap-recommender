@@ -41,6 +41,7 @@ from streamlit_folium import st_folium
 
 from dashboard.logic import priority_color, priority_label
 
+
 def _resolve_api_base_url() -> str:
     """
     Figure out which API to call. Checks, in order:
