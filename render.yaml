@@ -1,0 +1,23 @@
+# render.yaml
+#
+# Render "Blueprint" spec for deploying the API as a Docker web service on
+# Render's free tier. Lets anyone (including Render itself, via "New +" ->
+# "Blueprint") spin this up from the repo without manually clicking through
+# the dashboard - this file is what the New Web Service form does by hand.
+#
+# Deploy: https://dashboard.render.com -> New + -> Blueprint -> select this
+# repo. Render reads this file automatically.
+
+services:
+  - type: web
+    name: waste-infra-gap-recommender-api
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    healthCheckPath: /
+    envVars:
+      # The Dockerfile's CMD honours $PORT when it's set, falling back to
+      # 8000 locally - this just pins Render to the same port so the two
+      # environments behave identically.
+      - key: PORT
+        value: 8000

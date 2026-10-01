@@ -10,6 +10,10 @@
 # Build:  docker build -t waste-infra-gap-recommender .
 # Run:    docker run -p 8000:8000 waste-infra-gap-recommender
 # Then:   http://localhost:8000/docs
+#
+# Listens on $PORT if the environment sets one (e.g. Render, which injects
+# its own PORT and expects the container to honour it), otherwise falls
+# back to 8000 for local/Docker Compose use.
 
 FROM python:3.11-slim
 
@@ -26,4 +30,4 @@ COPY data/ data/
 
 EXPOSE 8000
 
-CMD ["sh", "-c", "python data/ingest.py && uvicorn api.main:app --host 0.0.0.0 --port 8000"]
+CMD ["sh", "-c", "python data/ingest.py && uvicorn api.main:app --host 0.0.0.0 --port ${PORT:-8000}"]
