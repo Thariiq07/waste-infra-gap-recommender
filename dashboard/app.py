@@ -56,7 +56,10 @@ def _resolve_api_base_url() -> str:
         return env_value
     try:
         return st.secrets["WASTE_API_URL"]
-    except Exception:
+    except Exception:  # noqa: BLE001 - st.secrets can fail several different
+        # ways depending on whether secrets.toml exists at all, whether the
+        # key is present, or how the host environment is configured; any of
+        # them should fall back to localhost rather than crash the app.
         return "http://localhost:8000"
 
 
