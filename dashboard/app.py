@@ -73,14 +73,39 @@ st.set_page_config(
 
 
 @st.cache_data(ttl=300)
-def fetch_underserved_index() -> pd.DataFrame | None:
-    """Pull the full ranked list from the API. Returns None if it can't be reached."""
+def _fetch_underserved_index_cached() -> pd.DataFrame | None:
+    """
+    The actual network call, cached for 5 minutes - but see
+    fetch_underserved_index() below, which only lets *successful* calls
+    stay cached.
+
+    The 60s timeout matters: the API is on Render's free tier, which spins
+    down after ~15 minutes idle and can take 30-50 seconds to wake back up
+    on the next request. A short timeout here would give up before the API
+    even gets a chance to respond.
+    """
     try:
-        resp = requests.get(f"{API_BASE_URL}/underserved-index", timeout=10)
+        resp = requests.get(f"{API_BASE_URL}/underserved-index", timeout=60)
         resp.raise_for_status()
     except requests.RequestException:
         return None
     return pd.DataFrame(resp.json())
+
+
+def fetch_underserved_index() -> pd.DataFrame | None:
+    """
+    Pull the full ranked list from the API. Returns None if it can't be
+    reached.
+
+    If the call fails, the cache entry is cleared immediately instead of
+    sticking around for the full 5-minute TTL - otherwise every visitor for
+    the next 5 minutes would see the same stale failure, even after the API
+    has already woken back up.
+    """
+    result = _fetch_underserved_index_cached()
+    if result is None:
+        _fetch_underserved_index_cached.clear()
+    return result
 
 
 @st.cache_data
@@ -95,15 +120,29 @@ st.markdown(
     "it actually has**. Darker red means a bigger gap between the two."
 )
 
-data = fetch_underserved_index()
+with st.spinner(
+    "Loading data... if this is the first visit in a while, the API may be "
+    "waking up from being idle - this can take up to a minute."
+):
+    data = fetch_underserved_index()
 
 if data is None:
-    st.error(
-        "Can't reach the API right now. Make sure it's running "
-        f"(expected at `{API_BASE_URL}`) - e.g. run `docker compose up` "
-        "or `uvicorn api.main:app --reload` in another terminal, then "
-        "refresh this page."
-    )
+    is_local = "localhost" in API_BASE_URL or "127.0.0.1" in API_BASE_URL
+    if is_local:
+        st.error(
+            "Can't reach the API right now. Make sure it's running "
+            f"(expected at `{API_BASE_URL}`) - e.g. run `docker compose up` "
+            "or `uvicorn api.main:app --reload` in another terminal, then "
+            "refresh this page."
+        )
+    else:
+        st.error(
+            "Couldn't reach the API just now. It's on a free hosting tier "
+            "that spins down when idle, so it can take up to a minute to "
+            "wake up on the first visit in a while."
+        )
+        if st.button("Try again"):
+            st.rerun()
     st.stop()
 
 boundaries = load_boundaries()
